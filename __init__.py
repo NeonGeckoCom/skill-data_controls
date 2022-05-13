@@ -26,25 +26,34 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+from enum import IntEnum
 from random import randint
 from adapt.intent import IntentBuilder
 from mycroft_bus_client import Message
 from neon_utils.logger import LOG
 from neon_utils.skills.neon_skill import NeonSkill
-from neon_utils.message_utils import request_from_mobile
 from neon_utils.validator_utils import numeric_confirmation_validator
 from neon_utils.configuration_utils import get_neon_user_config
 from mycroft.skills import intent_handler
 
-from .data_utils import refresh_neon, UserData
-
 
 class DataControlsSkill(NeonSkill):
+    class UserData(IntEnum):
+        CACHES = 0
+        PROFILE = 1
+        ALL_TR = 2
+        CONF_LIKES = 3
+        CONF_DISLIKES = 4
+        ALL_DATA = 5
+        ALL_MEDIA = 6
+        ALL_UNITS = 7
+        ALL_LANGUAGE = 8
+
     def __init__(self):
         super(DataControlsSkill, self).__init__(name="DataControlsSkill")
 
     @intent_handler(IntentBuilder("clear_data_intent")
-                    .require("ClearKeyword").require("dataset"))
+                    .require("clear").require("dataset"))
     def handle_data_erase(self, message):
         """
         Handles a request to clear user data.
@@ -63,128 +72,121 @@ class DataControlsSkill(NeonSkill):
             else:
                 opt = utt
             LOG.info(opt)
-        user = self.get_utterance_user(message)
+
+        # TODO: Below default is patching a bug in neon_utils
+        user = self.get_utterance_user(message) or "local"
 
         # Note that the below checks are ordered by request specificity
-        if self.voc_match(opt, "Selected"):
-            dialog_opt = "clear your transcribed likes"
-            to_clear = (UserData.CONF_LIKES,)
-        elif self.voc_match(opt, "Ignored"):
-            dialog_opt = "clear your transcribed dislikes"
-            to_clear = (UserData.CONF_DISLIKES,)
-        elif self.voc_match(opt, "Transcription"):
-            dialog_opt = "clear all of your transcriptions"
-            to_clear = (UserData.ALL_TR,)
-        elif self.voc_match(opt, "Brands"):
-            dialog_opt = "clear all of your brands"
-            to_clear = (UserData.CONF_LIKES, UserData.CONF_DISLIKES)
-        elif self.voc_match(opt, "Media"):
-            dialog_opt = "clear your user photos, videos, " \
-                         "and audio recordings on this device"
-            to_clear = (UserData.ALL_MEDIA,)
-        elif self.voc_match(opt, "Language"):
-            dialog_opt = "reset your language settings"
-            to_clear = (UserData.ALL_LANGUAGE,)
-        elif self.voc_match(opt, "Cache"):
-            dialog_opt = "clear all of your cached responses"
-            to_clear = (UserData.CACHES,)
-        elif self.voc_match(opt, "Profile"):
-            dialog_opt = "reset your user profile"
-            to_clear = (UserData.PROFILE,)
-        elif self.voc_match(opt, "Preferences"):
-            dialog_opt = "reset your unit and interface preferences"
-            to_clear = (UserData.ALL_PREFS,)
-        elif self.voc_match(opt, "Data"):
-            dialog_opt = "clear all of your data"
-            to_clear = (UserData.ALL_DATA,)
+        if self.voc_match(opt, "likes"):
+            dialog_opt = "word_liked_brands"
+            to_clear = (self.UserData.CONF_LIKES,)
+        elif self.voc_match(opt, "dislikes"):
+            dialog_opt = "word_disliked_brands"
+            to_clear = (self.UserData.CONF_DISLIKES,)
+        elif self.voc_match(opt, "transcription"):
+            dialog_opt = "word_transcriptions"
+            to_clear = (self.UserData.ALL_TR,)
+        elif self.voc_match(opt, "brands"):
+            dialog_opt = "word_all_brands"
+            to_clear = (self.UserData.CONF_LIKES, self.UserData.CONF_DISLIKES)
+        elif self.voc_match(opt, "media"):
+            dialog_opt = "word_media"
+            to_clear = (self.UserData.ALL_MEDIA,)
+        elif self.voc_match(opt, "language"):
+            dialog_opt = "word_language"
+            to_clear = (self.UserData.ALL_LANGUAGE,)
+        elif self.voc_match(opt, "cache"):
+            dialog_opt = "word_caches"
+            to_clear = (self.UserData.CACHES,)
+        elif self.voc_match(opt, "profile"):
+            dialog_opt = "word_profile_data"
+            to_clear = (self.UserData.PROFILE,)
+        elif self.voc_match(opt, "Units"):
+            dialog_opt = "word_units"
+            to_clear = (self.UserData.ALL_UNITS,)
+        elif self.voc_match(opt, "data"):
+            dialog_opt = "word_all_data"
+            to_clear = (self.UserData.ALL_DATA,)
         else:
             dialog_opt = None
             to_clear = None
 
         if dialog_opt:
             validator = numeric_confirmation_validator(str(confirm_number))
-            if self.get_response('ClearData', {'option': dialog_opt,
-                                               'confirm': str(confirm_number)},
+            if self.get_response('ask_clear_data',
+                                 {'option': self.translate(dialog_opt),
+                                  'confirm': str(confirm_number)},
                                  validator):
                 for dtype in to_clear:
-                    self._clear_user_data(user, dtype, message)
+                    self._clear_user_data(dtype, message)
+                self.bus.emit(message.forward("neon.clear_data",
+                                              {"username": user,
+                                               "data_to_remove": [dtype.name
+                                                                  for dtype in
+                                                                  to_clear]}))
             else:
-                self.speak_dialog("NotDoingAnything", private=True)
+                self.speak_dialog("confirm_no_action", private=True)
         else:
             LOG.warning(f"Invalid data type requested: {opt}")
 
-    def _clear_user_data(self, user: str, data_type: UserData,
+    def _clear_user_data(self, data_type: UserData,
                          message: Message):
         """
         Clears the requested data_type for the specified user and speaks some
         confirmation.
         """
-        refresh_neon(data_type, user)
         default_config = get_neon_user_config(self.file_system.path)
-        if data_type == UserData.ALL_DATA:
-            self.speak_dialog("ConfirmClearAll", private=True)
+        if data_type == self.UserData.ALL_DATA:
+            self.speak_dialog("confirm_clear_all", private=True)
             self.update_profile(default_config.content, message)
-
-            if request_from_mobile(message):
-                self.mobile_skill_intent("clear_data",
-                                         {"kind": "all"}, message)
-            else:
-                self.socket_emit_to_server("clear cookies intent",
-                                           [message.context["klat_data"]
-                                            ["request_id"]])
             return
-        if data_type == UserData.CONF_LIKES:
-            self.speak_dialog("ConfirmClearData", {"kind": "liked brands"},
+        if data_type == self.UserData.CONF_LIKES:
+            self.speak_dialog("confirm_clear_data",
+                              {"kind": self.translate("word_liked_brands")},
                               private=True)
             return
-        if data_type == UserData.CONF_DISLIKES:
-            self.speak_dialog("ConfirmClearData", {"kind": "ignored brands"},
+        if data_type == self.UserData.CONF_DISLIKES:
+            self.speak_dialog("confirm_clear_data",
+                              {"kind": self.translate("word_disliked_brands")},
                               private=True)
             updated_config = {"brands": {"ignored_brands": {}}}
             self.update_profile(updated_config, message)
             return
-        if data_type == UserData.ALL_TR:
-            self.speak_dialog("ConfirmClearData",
-                              {"kind": "audio recordings and transcriptions"},
+        if data_type == self.UserData.ALL_TR:
+            self.speak_dialog("confirm_clear_data",
+                              {"kind": self.translate("word_transcriptions")},
                               private=True)
             return
-        if data_type == UserData.PROFILE:
-            self.speak_dialog("ConfirmClearData",
-                              {"kind": "personal profile data"}, private=True)
+        if data_type == self.UserData.PROFILE:
+            self.speak_dialog("confirm_clear_data",
+                              {"kind": self.translate("word_profile_data")},
+                              private=True)
             updated_config = default_config.content["user"]
             self.update_profile({"user": updated_config}, message)
             return
-        if data_type == UserData.CACHES:
-            self.speak_dialog("ConfirmClearData", {"kind": "cached responses"},
+        if data_type == self.UserData.CACHES:
+            self.speak_dialog("confirm_clear_data",
+                              {"kind": self.translate("word_caches")},
                               private=True)
-            if request_from_mobile(message):
-                self.mobile_skill_intent("clear_data", {"kind": "cache"},
-                                         message)
-            elif self.server:
-                self.socket_emit_to_server("clear cookies intent",
-                                           [message.context["klat_data"]
-                                            ["request_id"]])
             return
-        if data_type == UserData.ALL_PREFS:
-            self.speak_dialog("ConfirmClearData", {"kind": "unit preferences"},
+        if data_type == self.UserData.ALL_UNITS:
+            self.speak_dialog("confirm_clear_data",
+                              {"kind": self.translate("word_units")},
                               private=True)
             updated_config = default_config.content["units"]
             self.update_profile({"units": updated_config}, message)
             return
-        if data_type == UserData.ALL_MEDIA:
-            self.speak_dialog("ConfirmClearData",
-                              {"kind": "pictures, videos, and "
-                                       "audio recordings I have taken."},
+        if data_type == self.UserData.ALL_MEDIA:
+            self.speak_dialog("confirm_clear_data",
+                              {"kind": self.translate("word_media")},
                               private=True)
-            if request_from_mobile(message):
-                self.mobile_skill_intent("clear_data", {"kind": "media"},
-                                         message)
             return
-        if data_type == UserData.ALL_LANGUAGE:
-            self.speak_dialog("ConfirmClearData",
-                              {"kind": "language preferences"}, private=True)
-            updated_config = default_config.content["language"]
-            self.update_profile({"language": updated_config}, message)
+        if data_type == self.UserData.ALL_LANGUAGE:
+            self.speak_dialog("confirm_clear_data",
+                              {"kind": self.translate("word_language")},
+                              private=True)
+            updated_config = default_config.content["speech"]
+            self.update_profile({"speech": updated_config}, message)
             return
 
 
