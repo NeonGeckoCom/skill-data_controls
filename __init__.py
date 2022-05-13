@@ -54,7 +54,7 @@ class UserData(IntEnum):
 
 class DataControlsSkill(NeonSkill):
     def __init__(self):
-        super(DataControlsSkill).__init__(name="DataControlsSkill")
+        super().__init__(name="DataControlsSkill")
 
     @intent_handler(IntentBuilder("clear_data_intent")
                     .require("ClearKeyword").require("dataset"))
