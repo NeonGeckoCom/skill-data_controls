@@ -28,6 +28,7 @@
 
 import os
 
+from enum import IntEnum
 from glob import glob
 from shutil import rmtree
 from neon_utils.configuration_utils import get_neon_local_config, get_neon_device_type
@@ -39,22 +40,31 @@ ALL_TRANSCRIPTS = ("ts_transcripts", "ts_selected_transcripts", "ts_ignored_tran
 ALL_MEDIA = ("music", "video", "pictures")
 
 
-# TODO: Add unit tests for these! DM
-def refresh_neon(data_to_remove: str, user: str):
-    if data_to_remove == "all":
+class UserData(IntEnum):
+    CACHES = 0
+    PROFILE = 1
+    ALL_TR = 2
+    CONF_LIKES = 3
+    CONF_DISLIKES = 4
+    ALL_DATA = 5
+    ALL_MEDIA = 6
+    ALL_PREFS = 7
+    ALL_LANGUAGE = 8
+
+
+def refresh_neon(data_to_remove: UserData, user: str):
+    if data_to_remove == UserData.ALL_DATA:
         remove_transcripts(ALL_TRANSCRIPTS, user)
         remove_media(ALL_MEDIA, user)
-    elif data_to_remove == "ignored":
+    elif data_to_remove == UserData.CONF_DISLIKES:
         remove_transcripts(tuple("ts_ignored_transcripts"), user)
-    elif data_to_remove == "selected":
+    elif data_to_remove == UserData.CONF_LIKES:
         remove_transcripts(tuple("ts_selected_transcripts"), user)
-    elif data_to_remove == "brands":
-        remove_transcripts(("ts_selected_transcripts", "ts_ignored_transcripts"), user)
-    elif data_to_remove == "transcripts":
+    elif data_to_remove == UserData.ALL_TR:
         remove_transcripts(ALL_TRANSCRIPTS, user)
-    elif data_to_remove == "media":
+    elif data_to_remove == UserData.ALL_MEDIA:
         remove_media(ALL_MEDIA, user)
-    elif data_to_remove == "caches":
+    elif data_to_remove == UserData.CACHES:
         remove_cache(user)
     else:
         LOG.warning(f"Unknown data type: {data_to_remove}")
