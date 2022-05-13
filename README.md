@@ -1,12 +1,15 @@
-# <img src='https://0000.us/klatchat/app/files/neon_images/icons/neon_skill.png' card_color="#FF8600" width="50" style="vertical-align:bottom">{title}
+# <img src='https://0000.us/klatchat/app/files/neon_images/icons/neon_skill.png' card_color="#FF8600" width="50" style="vertical-align:bottom">Data Controls
 ## Summary
-{summary}
+Clear user data and preferences
 
 ## Description
-{description}
+Manage saved user profile settings, saved transcriptions, and user-generated media.
 
 ## Examples
-{list of example utterances}
+- Clear my user transcriptions
+- Erase all pictures
+- Delete my profile
+- Reset my language settings
 
 ## Contact Support
 Use the [link](https://neongecko.com/ContactUs) or [submit an issue on GitHub](https://help.github.com/en/articles/creating-an-issue)
@@ -14,11 +17,15 @@ Use the [link](https://neongecko.com/ContactUs) or [submit an issue on GitHub](h
 ## Credits
 
 [NeonGeckoCom](https://github.com/NeonGeckoCom)
-{author_name}
+[NeonDaniel](https://github.com/NeonDaniel)
 
 ## Category
 **category** {categories}
 
 ## Tags
-#tag
-#tag2
+#NeonGecko Original
+#NeonAI
+#Data
+#Settings
+#Privacy
+#Profile

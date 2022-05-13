@@ -66,7 +66,6 @@ class TestSkill(unittest.TestCase):
         # Override speak and speak_dialog to test passed arguments
         cls.skill.speak = Mock()
         cls.skill.speak_dialog = Mock()
-
         # TODO: Put any skill method overrides here
 
     def setUp(self):
@@ -88,9 +87,77 @@ class TestSkill(unittest.TestCase):
         from neon_utils.skills import NeonSkill
 
         self.assertIsInstance(self.skill, NeonSkill)
-        # TODO: Test parameters declared in skill init/initialize here
 
-    # TODO: Add tests for all intent handlers and support methods here
+    def test_handle_data_erase(self):
+        real_get_response = self.skill.get_response
+        self.skill.get_response = Mock(return_value=False)
+
+        selected_message = Message("test", {"dataset": "selected transcripts"})
+        ignored_message = Message("test", {"dataset": "dislikes"})
+        transcription_message = Message("test", {"dataset": "transcriptions"})
+        brands_message = Message("test", {"dataset": "brands"})
+        all_data_message = Message("test", {"dataset": "information"})
+        media_message = Message("test", {"dataset": "pictures and videos"})
+        preferences_message = Message("test", {"dataset": "settings"})
+        language_message = Message("test", {"dataset": "language settings"})
+        cache_message = Message("test", {"dataset": "cached data"})
+        profile_message = Message("test", {"dataset": "profile"})
+        invalid_message = Message("test", {"dataset": "invalid setting"})
+
+        self.skill.handle_data_erase(invalid_message)
+        self.skill.speak_dialog.assert_not_called()
+
+        def _check_get_response(opt):
+            call = self.skill.get_response.call_args[0]
+            self.assertEqual(call[0], "ClearData")
+            self.assertEqual(set(call[1].keys()), {"option", "confirm"})
+            self.assertEqual(call[1]["option"], opt)
+            self.assertTrue(call[2](call[1]["confirm"]))
+            self.skill.speak_dialog.assert_called_with("NotDoingAnything",
+                                                       private=True)
+
+        self.skill.handle_data_erase(selected_message)
+        _check_get_response("clear your transcribed likes")
+
+        self.skill.handle_data_erase(ignored_message)
+        _check_get_response("clear your transcribed dislikes")
+
+        self.skill.handle_data_erase(transcription_message)
+        _check_get_response("clear all of your transcriptions")
+
+        self.skill.handle_data_erase(brands_message)
+        _check_get_response("clear all of your brands")
+
+        self.skill.handle_data_erase(all_data_message)
+        _check_get_response("clear all of your data")
+
+        self.skill.handle_data_erase(media_message)
+        _check_get_response("clear your user photos, videos, "
+                            "and audio recordings on this device")
+
+        self.skill.handle_data_erase(preferences_message)
+        _check_get_response("reset your unit and interface preferences")
+
+        self.skill.handle_data_erase(language_message)
+        _check_get_response("reset your language settings")
+
+        self.skill.handle_data_erase(cache_message)
+        _check_get_response("clear all of your cached responses")
+
+        self.skill.handle_data_erase(profile_message)
+        _check_get_response("reset your user profile")
+
+        self.skill.get_response = Mock(return_value=True)
+        real_clear_user_data = self.skill._clear_user_data
+        self.skill._clear_user_data = Mock()
+        # TODO: Test all calls to clear_user_data
+
+        self.skill.get_response = real_get_response
+
+    def test_clear_user_data(self):
+        pass
+
+    # TODO: Test data_utils
 
 
 if __name__ == '__main__':
