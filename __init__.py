@@ -113,10 +113,12 @@ class DataControlsSkill(NeonSkill):
 
         if dialog_opt:
             validator = numeric_confirmation_validator(str(confirm_number))
-            if self.get_response('ask_clear_data',
+            resp = self.get_response('ask_clear_data',
                                  {'option': self.translate(dialog_opt),
                                   'confirm': str(confirm_number)},
-                                 validator):
+                                 validator)
+            LOG.info(resp)
+            if resp:
                 for dtype in to_clear:
                     self._clear_user_data(dtype, message)
                 self.bus.emit(message.forward("neon.clear_data",
