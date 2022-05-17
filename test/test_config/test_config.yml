@@ -1,0 +1,57 @@
+user:
+  first_name: Demo
+  middle_name: ''
+  last_name: Test
+  preferred_name: Demo
+  full_name: Demo Test
+  dob: YYYY/MM/DD
+  email: test@neongecko.com
+  username: neon_test
+  password: ''
+  picture: ''
+  about: ''
+  phone: ''
+  phone_verified: false
+  email_verified: false
+
+brands:
+  ignored_brands:
+    apple: 33
+  favorite_brands:
+    google: 31
+    neon: 30
+  specially_requested:
+    microsoft: 44
+speech:
+  stt_language: uk
+  alt_languages: [en]
+  tts_language: uk-uk
+  tts_gender: female
+  neon_voice: ''
+  secondary_tts_language: pl-pl
+  secondary_tts_gender: male
+  secondary_neon_voice: ''
+  speed_multiplier: 1.0
+
+units:
+  time: 24
+  # 12, 24
+  date: YMD
+  # MDY, YMD, YDM
+  measure: metric
+  # imperial, metric
+
+location:
+  lat: 47.6859573
+  lng: -122.1920249
+  city: Kirkland
+  state: Washington
+  country: United States
+  tz: America/Los_Angeles
+  utc: -8.0
+
+response_mode:
+  speed_mode: quick
+
+privacy:
+  save_audio: true
