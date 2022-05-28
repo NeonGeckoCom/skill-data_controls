@@ -1,15 +1,14 @@
 # <img src='https://0000.us/klatchat/app/files/neon_images/icons/neon_skill.png' card_color="#FF8600" width="50" style="vertical-align:bottom">Data Controls
 ## Summary
-Clear user data and preferences
+Manage user data
 
 ## Description
-Manage saved user profile settings, saved transcriptions, and user-generated media.
+Manage saved transcriptions and other user-generated media.
 
 ## Examples
 - Clear my user transcriptions
 - Erase all pictures
 - Delete my profile
-- Reset my language settings
 
 ## Contact Support
 Use the [link](https://neongecko.com/ContactUs) or [submit an issue on GitHub](https://help.github.com/en/articles/creating-an-issue)
