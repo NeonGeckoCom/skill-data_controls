@@ -34,6 +34,7 @@ from neon_utils.logger import LOG
 from neon_utils.skills.neon_skill import NeonSkill
 from neon_utils.validator_utils import numeric_confirmation_validator
 from neon_utils.configuration_utils import get_neon_user_config
+from neon_utils.user_utils import get_message_user
 from mycroft.skills import intent_handler
 
 
@@ -74,7 +75,7 @@ class DataControlsSkill(NeonSkill):
             LOG.info(opt)
 
         # TODO: Below default is patching a bug in neon_utils
-        user = self.get_utterance_user(message) or "local"
+        user = get_message_user(message) or "local"
 
         # Note that the below checks are ordered by request specificity
         if self.voc_match(opt, "likes"):
@@ -114,9 +115,9 @@ class DataControlsSkill(NeonSkill):
         if dialog_opt:
             validator = numeric_confirmation_validator(str(confirm_number))
             resp = self.get_response('ask_clear_data',
-                                 {'option': self.translate(dialog_opt),
-                                  'confirm': str(confirm_number)},
-                                 validator)
+                                     {'option': self.translate(dialog_opt),
+                                      'confirm': str(confirm_number)},
+                                     validator)
             LOG.info(resp)
             if resp:
                 for dtype in to_clear:
