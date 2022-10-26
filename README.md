@@ -6,9 +6,9 @@ Manage user data
 Manage saved transcriptions and other user-generated media.
 
 ## Examples
-- Clear my user transcriptions
-- Erase all pictures
-- Delete my profile
+- Clear my user transcriptions.
+- Erase all pictures.
+- Delete my profile.
 
 ## Contact Support
 Use the [link](https://neongecko.com/ContactUs) or [submit an issue on GitHub](https://help.github.com/en/articles/creating-an-issue)
@@ -19,7 +19,7 @@ Use the [link](https://neongecko.com/ContactUs) or [submit an issue on GitHub](h
 [NeonDaniel](https://github.com/NeonDaniel)
 
 ## Category
-**category** {categories}
+**Configuration**
 
 ## Tags
 #NeonGecko Original

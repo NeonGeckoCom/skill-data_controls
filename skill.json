@@ -5,9 +5,9 @@
     "short_description": "Manage user data",
     "description": "Manage saved transcriptions and other user-generated media.",
     "examples": [
-        "clear my user transcriptions",
-        "erase all pictures",
-        "delete my profile"
+        "Clear my user transcriptions.",
+        "Erase all pictures.",
+        "Delete my profile."
     ],
     "desktopFile": false,
     "warning": "",
@@ -30,9 +30,9 @@
     "branch": "master",
     "license": "BSD-3-Clause",
     "icon": "https://0000.us/klatchat/app/files/neon_images/icons/neon_skill.png",
-    "category": "category** {categories}",
+    "category": "Configuration",
     "categories": [
-        "category** {categories}"
+        "Configuration"
     ],
     "tags": [
         "NeonGecko Original",
