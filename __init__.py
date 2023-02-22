@@ -30,11 +30,14 @@ from enum import IntEnum
 from random import randint
 from adapt.intent import IntentBuilder
 from mycroft_bus_client import Message
-from neon_utils.logger import LOG
 from neon_utils.skills.neon_skill import NeonSkill
 from neon_utils.validator_utils import numeric_confirmation_validator
 from neon_utils.configuration_utils import get_neon_user_config
 from neon_utils.user_utils import get_message_user
+from ovos_utils import classproperty
+from ovos_utils.log import LOG
+from ovos_utils.process_utils import RuntimeRequirements
+
 from mycroft.skills import intent_handler
 
 
@@ -52,6 +55,18 @@ class DataControlsSkill(NeonSkill):
 
     def __init__(self):
         super(DataControlsSkill, self).__init__(name="DataControlsSkill")
+
+    @classproperty
+    def runtime_requirements(self):
+        return RuntimeRequirements(network_before_load=False,
+                                   internet_before_load=False,
+                                   gui_before_load=False,
+                                   requires_internet=False,
+                                   requires_network=False,
+                                   requires_gui=False,
+                                   no_internet_fallback=True,
+                                   no_network_fallback=True,
+                                   no_gui_fallback=True)
 
     @intent_handler(IntentBuilder("clear_data_intent")
                     .require("clear").require("dataset"))
