@@ -37,3 +37,7 @@ en-us:
       - dataset: pictures
   - i want to reset my liked brands:
       - dataset: liked brands
+  - erase all pictures:
+      - dataset: pictures
+  - delete my profile:
+      - dataset: profile
