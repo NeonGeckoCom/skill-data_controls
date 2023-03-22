@@ -29,3 +29,11 @@ en-us:
       - dataset: transcripts
   - I want to delete the entire profile:
       - dataset: entire profile
+  - i want you to clear all of my media:
+      - dataset: media
+  - delete all of my photos:
+      - dataset: photos
+  - remove my pictures:
+      - dataset: pictures
+  - i want to reset my liked brands:
+      - dataset: liked brands
