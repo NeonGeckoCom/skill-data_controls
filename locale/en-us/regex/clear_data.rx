@@ -1,1 +1,0 @@
-(clear|erase|delete|reset) (all |)(of |)(the |my )(?P<dataset>.*)

@@ -1,0 +1,43 @@
+# Specify resources to test here.
+
+# Specify languages to be tested
+languages:
+  - "en-us"
+
+# vocab is lowercase .voc file basenames
+vocab:
+  - brands
+  - cache
+  - cancel
+  - data
+  - dislikes
+  - language
+  - likes
+  - media
+  - profile
+  - transcription
+  - units
+# dialog is .dialog file basenames (case-sensitive)
+dialog:
+  - ask_clear_data
+  - confirm_clear_all
+  - confirm_clear_data
+  - confirm_no_action
+  - word_all_brands
+  - word_all_data
+  - word_caches
+  - word_disliked_brands
+  - word_language
+  - word_liked_brands
+  - word_media
+  - word_profile_data
+  - word_transcriptions
+  - word_units
+# regex entities, not necessarily filenames
+regex: []
+intents:
+  # Padatious intents are the `.intent` file names
+  padatious:
+    - clear_data.intent
+  # Adapt intents are the name passed to the constructor
+  adapt: []

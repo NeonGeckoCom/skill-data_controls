@@ -1,0 +1,43 @@
+# Specify intents to test here. Valid test cases are as follows:
+
+# Basic intent match tests only:
+#lang:
+#  intent_name:
+#    - example utterance
+#    - other example utterance
+
+# Intent tests with expected vocab/entity matches:
+#lang:
+#  intent_name:
+#    - example_utterance:
+#        - expected vocab name
+#        - other expected vocab name
+
+# Intent tests with specific vocab/entity extraction tests:
+#lang:
+#  intent_name:
+#    - example_utterance:
+#        - expected_vocab_key: expected_vocab_value
+#        - expected_entity_key: expected_entity_value
+
+
+en-us:
+  clear_data.intent:
+  - clear my data:
+      - dataset: data
+  - erase all of my transcripts:
+      - dataset: transcripts
+  - I want to delete the entire profile:
+      - dataset: entire profile
+  - i want you to clear all of my media:
+      - dataset: media
+  - delete all of my photos:
+      - dataset: photos
+  - remove my pictures:
+      - dataset: pictures
+  - i want to reset my liked brands:
+      - dataset: liked brands
+  - erase all pictures:
+      - dataset: pictures
+  - delete my profile:
+      - dataset: profile
