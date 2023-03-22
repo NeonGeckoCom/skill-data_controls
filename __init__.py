@@ -28,7 +28,6 @@
 
 from enum import IntEnum
 from random import randint
-from adapt.intent import IntentBuilder
 from mycroft_bus_client import Message
 from neon_utils.skills.neon_skill import NeonSkill
 from neon_utils.validator_utils import numeric_confirmation_validator
@@ -38,7 +37,7 @@ from ovos_utils import classproperty
 from ovos_utils.log import LOG
 from ovos_utils.process_utils import RuntimeRequirements
 
-from mycroft.skills import intent_handler
+from mycroft.skills import intent_file_handler
 
 
 class DataControlsSkill(NeonSkill):
@@ -68,8 +67,7 @@ class DataControlsSkill(NeonSkill):
                                    no_network_fallback=True,
                                    no_gui_fallback=True)
 
-    @intent_handler(IntentBuilder("clear_data_intent")
-                    .require("clear").require("dataset"))
+    @intent_file_handler("clear_data.intent")
     def handle_data_erase(self, message):
         """
         Handles a request to clear user data.
@@ -117,7 +115,7 @@ class DataControlsSkill(NeonSkill):
         elif self.voc_match(opt, "profile"):
             dialog_opt = "word_profile_data"
             to_clear = (self.UserData.PROFILE,)
-        elif self.voc_match(opt, "Units"):
+        elif self.voc_match(opt, "units"):
             dialog_opt = "word_units"
             to_clear = (self.UserData.ALL_UNITS,)
         elif self.voc_match(opt, "data"):
