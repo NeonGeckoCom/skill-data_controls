@@ -163,7 +163,8 @@ class TestSkill(unittest.TestCase):
         self.skill._clear_user_data = Mock()
 
         def _check_clear_user_data(dtype, message):
-            self.skill._clear_user_data.assert_called_with(dtype, message)
+            self.skill._clear_user_data.assert_called_with(dtype, message,
+                                                           "local")
             bus_event.wait(3)
             self.assertEqual(clear_data_message.context, message.context)
             self.assertEqual(clear_data_message.data["data_to_remove"],
@@ -192,8 +193,8 @@ class TestSkill(unittest.TestCase):
         self.skill.handle_data_erase(brands_message)
         _check_get_response("word_all_brands", True)
         self.skill._clear_user_data.assert_has_calls([
-            call(self.skill.UserData.CONF_LIKES, brands_message),
-            call(self.skill.UserData.CONF_DISLIKES, brands_message)
+            call(self.skill.UserData.CONF_LIKES, brands_message, "local"),
+            call(self.skill.UserData.CONF_DISLIKES, brands_message, "local")
         ])
         bus_event.wait(5)
         self.assertEqual(clear_data_message.context, brands_message.context)
