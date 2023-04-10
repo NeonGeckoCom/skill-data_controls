@@ -130,11 +130,11 @@ class DataControlsSkill(NeonSkill):
                                      validator)
             LOG.info(resp)
             if resp:
-                for dtype in to_clear:
-                    self._clear_user_data(dtype, message)
-
                 # TODO: Should this just use `username` from context?
                 user = get_message_user(message) or "local"
+
+                for dtype in to_clear:
+                    self._clear_user_data(dtype, message, user)
 
                 self.bus.emit(message.forward("neon.clear_data",
                                               {"username": user,
@@ -147,14 +147,16 @@ class DataControlsSkill(NeonSkill):
             LOG.warning(f"Invalid data type requested: {opt}")
 
     def _clear_user_data(self, data_type: UserData,
-                         message: Message):
+                         message: Message, username: str):
         """
         Clears the requested data_type for the specified user and speaks some
         confirmation.
         :param data_type: UserData to clear
         :param message: Message associated with request
+        :param username: string username to update profile for
         """
         default_config = get_user_config_from_mycroft_conf()
+        default_config["user"]["username"] = username
         if data_type == self.UserData.ALL_DATA:
             self.speak_dialog("confirm_clear_all", private=True)
             self.update_profile(default_config, message)

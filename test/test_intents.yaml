@@ -41,3 +41,15 @@ en-us:
       - dataset: pictures
   - delete my profile:
       - dataset: profile
+  - clear my user settings:
+      - dataset: user settings
+  - clear my profile:
+      - dataset: profile
+
+unmatched intents:
+  en-us:
+    - clear all users
+    - what are user settings
+    - what is clear
+    - clear the path to something
+    - i need to clear my alerts
