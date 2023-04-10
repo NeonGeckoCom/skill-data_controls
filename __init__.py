@@ -68,11 +68,11 @@ class DataControlsSkill(NeonSkill):
                                    no_gui_fallback=True)
 
     @intent_file_handler("clear_data.intent")
-    def handle_data_erase(self, message):
+    def handle_data_erase(self, message: Message):
         """
         Handles a request to clear user data.
         This action will be confirmed numerically before executing
-        :param message: message object associated with request
+        :param message: Message associated with request
         """
         opt = str(message.data.get('dataset')).replace("user ", "")
         confirm_number = randint(100, 999)
@@ -130,9 +130,7 @@ class DataControlsSkill(NeonSkill):
                                      validator)
             LOG.info(resp)
             if resp:
-                # TODO: Should this just use `username` from context?
                 user = get_message_user(message) or "local"
-
                 for dtype in to_clear:
                     self._clear_user_data(dtype, message, user)
 
@@ -149,8 +147,8 @@ class DataControlsSkill(NeonSkill):
     def _clear_user_data(self, data_type: UserData,
                          message: Message, username: str):
         """
-        Clears the requested data_type for the specified user and speaks some
-        confirmation.
+        Speaks a confirmation and performs any necessary profile updates for the
+        requested `data_type`.
         :param data_type: UserData to clear
         :param message: Message associated with request
         :param username: string username to update profile for
