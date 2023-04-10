@@ -31,7 +31,7 @@ from random import randint
 from mycroft_bus_client import Message
 from neon_utils.skills.neon_skill import NeonSkill
 from neon_utils.validator_utils import numeric_confirmation_validator
-from neon_utils.configuration_utils import get_neon_user_config
+from neon_utils.configuration_utils import get_user_config_from_mycroft_conf
 from neon_utils.user_utils import get_message_user
 from ovos_utils import classproperty
 from ovos_utils.log import LOG
@@ -87,9 +87,6 @@ class DataControlsSkill(NeonSkill):
                 opt = utt
             LOG.info(opt)
 
-        # TODO: Below default is patching a bug in neon_utils
-        user = get_message_user(message) or "local"
-
         # Note that the below checks are ordered by request specificity
         if self.voc_match(opt, "likes"):
             dialog_opt = "word_liked_brands"
@@ -135,6 +132,10 @@ class DataControlsSkill(NeonSkill):
             if resp:
                 for dtype in to_clear:
                     self._clear_user_data(dtype, message)
+
+                # TODO: Should this just use `username` from context?
+                user = get_message_user(message) or "local"
+
                 self.bus.emit(message.forward("neon.clear_data",
                                               {"username": user,
                                                "data_to_remove": [dtype.name
@@ -150,11 +151,13 @@ class DataControlsSkill(NeonSkill):
         """
         Clears the requested data_type for the specified user and speaks some
         confirmation.
+        :param data_type: UserData to clear
+        :param message: Message associated with request
         """
-        default_config = get_neon_user_config(self.file_system.path)
+        default_config = get_user_config_from_mycroft_conf()
         if data_type == self.UserData.ALL_DATA:
             self.speak_dialog("confirm_clear_all", private=True)
-            self.update_profile(default_config.content, message)
+            self.update_profile(default_config, message)
             return
         if data_type == self.UserData.CONF_LIKES:
             self.speak_dialog("confirm_clear_data",
@@ -177,7 +180,7 @@ class DataControlsSkill(NeonSkill):
             self.speak_dialog("confirm_clear_data",
                               {"kind": self.translate("word_profile_data")},
                               private=True)
-            updated_config = default_config.content["user"]
+            updated_config = default_config["user"]
             self.update_profile({"user": updated_config}, message)
             return
         if data_type == self.UserData.CACHES:
@@ -189,7 +192,7 @@ class DataControlsSkill(NeonSkill):
             self.speak_dialog("confirm_clear_data",
                               {"kind": self.translate("word_units")},
                               private=True)
-            updated_config = default_config.content["units"]
+            updated_config = default_config["units"]
             self.update_profile({"units": updated_config}, message)
             return
         if data_type == self.UserData.ALL_MEDIA:
@@ -201,7 +204,7 @@ class DataControlsSkill(NeonSkill):
             self.speak_dialog("confirm_clear_data",
                               {"kind": self.translate("word_language")},
                               private=True)
-            updated_config = default_config.content["speech"]
+            updated_config = default_config["speech"]
             self.update_profile({"speech": updated_config}, message)
             return
 
