@@ -157,6 +157,7 @@ class DataControlsSkill(NeonSkill):
         """
         default_config = get_user_config_from_mycroft_conf()
         default_config["user"]["username"] = username
+        LOG.info(f"Clearing profile for: {username}")
         if data_type == self.UserData.ALL_DATA:
             self.speak_dialog("confirm_clear_all", private=True)
             self.update_profile(default_config, message)
