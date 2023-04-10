@@ -41,3 +41,11 @@ en-us:
       - dataset: pictures
   - delete my profile:
       - dataset: profile
+
+unmatched intents:
+  en-us:
+    - what is a profile
+    - i want to clear my tasks
+    - show me my pictures
+    - tell me my liked brands
+    - what does it mean to delete something

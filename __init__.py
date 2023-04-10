@@ -26,32 +26,19 @@
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE,  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from enum import IntEnum
 from random import randint
-from mycroft_bus_client import Message
+
 from neon_utils.skills.neon_skill import NeonSkill
 from neon_utils.validator_utils import numeric_confirmation_validator
-from neon_utils.configuration_utils import get_neon_user_config
 from neon_utils.user_utils import get_message_user
 from ovos_utils import classproperty
 from ovos_utils.log import LOG
 from ovos_utils.process_utils import RuntimeRequirements
-
+from neon_phal_plugin_reset.clear_data import UserData
 from mycroft.skills import intent_file_handler
 
 
 class DataControlsSkill(NeonSkill):
-    class UserData(IntEnum):
-        CACHES = 0
-        PROFILE = 1
-        ALL_TR = 2
-        CONF_LIKES = 3
-        CONF_DISLIKES = 4
-        ALL_DATA = 5
-        ALL_MEDIA = 6
-        ALL_UNITS = 7
-        ALL_LANGUAGE = 8
-
     def __init__(self):
         super(DataControlsSkill, self).__init__(name="DataControlsSkill")
 
@@ -74,7 +61,7 @@ class DataControlsSkill(NeonSkill):
         This action will be confirmed numerically before executing
         :param message: message object associated with request
         """
-        opt = str(message.data.get('dataset')).replace("user ", "")
+        opt = str(message.data.get('dataset'))
         confirm_number = randint(100, 999)
         # LOG.info(self.confirm_number)
         LOG.info(opt)
@@ -87,43 +74,41 @@ class DataControlsSkill(NeonSkill):
                 opt = utt
             LOG.info(opt)
 
-        # TODO: Below default is patching a bug in neon_utils
-        user = get_message_user(message) or "local"
-
         # Note that the below checks are ordered by request specificity
         if self.voc_match(opt, "likes"):
             dialog_opt = "word_liked_brands"
-            to_clear = (self.UserData.CONF_LIKES,)
+            to_clear = (UserData.CONF_LIKES,)
         elif self.voc_match(opt, "dislikes"):
             dialog_opt = "word_disliked_brands"
-            to_clear = (self.UserData.CONF_DISLIKES,)
+            to_clear = (UserData.CONF_DISLIKES,)
         elif self.voc_match(opt, "transcription"):
             dialog_opt = "word_transcriptions"
-            to_clear = (self.UserData.ALL_TR,)
+            to_clear = (UserData.ALL_TR,)
         elif self.voc_match(opt, "brands"):
             dialog_opt = "word_all_brands"
-            to_clear = (self.UserData.CONF_LIKES, self.UserData.CONF_DISLIKES)
+            to_clear = (UserData.CONF_LIKES, UserData.CONF_DISLIKES)
         elif self.voc_match(opt, "media"):
             dialog_opt = "word_media"
-            to_clear = (self.UserData.ALL_MEDIA,)
+            to_clear = (UserData.ALL_MEDIA,)
         elif self.voc_match(opt, "language"):
             dialog_opt = "word_language"
-            to_clear = (self.UserData.ALL_LANGUAGE,)
+            to_clear = (UserData.ALL_LANGUAGE,)
         elif self.voc_match(opt, "cache"):
             dialog_opt = "word_caches"
-            to_clear = (self.UserData.CACHES,)
+            to_clear = (UserData.CACHES,)
         elif self.voc_match(opt, "profile"):
             dialog_opt = "word_profile_data"
-            to_clear = (self.UserData.PROFILE,)
+            to_clear = (UserData.PROFILE,)
         elif self.voc_match(opt, "units"):
             dialog_opt = "word_units"
-            to_clear = (self.UserData.ALL_UNITS,)
+            to_clear = (UserData.ALL_UNITS,)
         elif self.voc_match(opt, "data"):
             dialog_opt = "word_all_data"
-            to_clear = (self.UserData.ALL_DATA,)
+            to_clear = (UserData.ALL_DATA,)
         else:
             dialog_opt = None
             to_clear = None
+        # TODO: Handle logs
 
         if dialog_opt:
             validator = numeric_confirmation_validator(str(confirm_number))
@@ -133,8 +118,10 @@ class DataControlsSkill(NeonSkill):
                                      validator)
             LOG.info(resp)
             if resp:
+                # TODO: Should this be left to the plugin to determine user?
+                user = get_message_user(message) or "local"
                 for dtype in to_clear:
-                    self._clear_user_data(dtype, message)
+                    self._confirm_clear_user_data(dtype)
                 self.bus.emit(message.forward("neon.clear_data",
                                               {"username": user,
                                                "data_to_remove": [dtype.name
@@ -145,64 +132,54 @@ class DataControlsSkill(NeonSkill):
         else:
             LOG.warning(f"Invalid data type requested: {opt}")
 
-    def _clear_user_data(self, data_type: UserData,
-                         message: Message):
+    def _confirm_clear_user_data(self, data_type: UserData):
         """
         Clears the requested data_type for the specified user and speaks some
         confirmation.
         """
-        default_config = get_neon_user_config(self.file_system.path)
-        if data_type == self.UserData.ALL_DATA:
+        if data_type == UserData.ALL_DATA:
             self.speak_dialog("confirm_clear_all", private=True)
-            self.update_profile(default_config.content, message)
             return
-        if data_type == self.UserData.CONF_LIKES:
+        if data_type == UserData.CONF_LIKES:
             self.speak_dialog("confirm_clear_data",
                               {"kind": self.translate("word_liked_brands")},
                               private=True)
             return
-        if data_type == self.UserData.CONF_DISLIKES:
+        if data_type == UserData.CONF_DISLIKES:
             self.speak_dialog("confirm_clear_data",
                               {"kind": self.translate("word_disliked_brands")},
                               private=True)
             updated_config = {"brands": {"ignored_brands": {}}}
-            self.update_profile(updated_config, message)
             return
-        if data_type == self.UserData.ALL_TR:
+        if data_type == UserData.ALL_TR:
             self.speak_dialog("confirm_clear_data",
                               {"kind": self.translate("word_transcriptions")},
                               private=True)
             return
-        if data_type == self.UserData.PROFILE:
+        if data_type == UserData.PROFILE:
             self.speak_dialog("confirm_clear_data",
                               {"kind": self.translate("word_profile_data")},
                               private=True)
-            updated_config = default_config.content["user"]
-            self.update_profile({"user": updated_config}, message)
             return
-        if data_type == self.UserData.CACHES:
+        if data_type == UserData.CACHES:
             self.speak_dialog("confirm_clear_data",
                               {"kind": self.translate("word_caches")},
                               private=True)
             return
-        if data_type == self.UserData.ALL_UNITS:
+        if data_type == UserData.ALL_UNITS:
             self.speak_dialog("confirm_clear_data",
                               {"kind": self.translate("word_units")},
                               private=True)
-            updated_config = default_config.content["units"]
-            self.update_profile({"units": updated_config}, message)
             return
-        if data_type == self.UserData.ALL_MEDIA:
+        if data_type == UserData.ALL_MEDIA:
             self.speak_dialog("confirm_clear_data",
                               {"kind": self.translate("word_media")},
                               private=True)
             return
-        if data_type == self.UserData.ALL_LANGUAGE:
+        if data_type == UserData.ALL_LANGUAGE:
             self.speak_dialog("confirm_clear_data",
                               {"kind": self.translate("word_language")},
                               private=True)
-            updated_config = default_config.content["speech"]
-            self.update_profile({"speech": updated_config}, message)
             return
 
 
