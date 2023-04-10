@@ -38,7 +38,8 @@ from mock import Mock
 from mock.mock import call
 from mycroft_bus_client import Message
 from ovos_utils.messagebus import FakeBus
-from neon_utils.configuration_utils import get_neon_user_config
+from neon_utils.configuration_utils import get_neon_user_config, \
+    get_user_config_from_mycroft_conf
 
 from mycroft.skills.skill_loader import SkillLoader
 
@@ -242,7 +243,7 @@ class TestSkill(unittest.TestCase):
         test_message = Message("test", {"key": "val"},
                                {"username": username,
                                 "user_profiles": [test_config]})
-        default_user_config = get_neon_user_config(self.skill.file_system.path)
+        default_user_config = get_user_config_from_mycroft_conf()
 
         real_update_profile = self.skill.update_profile
         self.skill.update_profile = Mock()
@@ -252,7 +253,7 @@ class TestSkill(unittest.TestCase):
         self.skill.speak_dialog.assert_called_with("confirm_clear_all",
                                                    private=True)
         self.skill.update_profile.assert_called_with(
-            default_user_config.content, test_message)
+            default_user_config, test_message)
 
         self.skill._clear_user_data(self.skill.UserData.CONF_LIKES,
                                     test_message)
