@@ -48,8 +48,8 @@ en-us:
 
 unmatched intents:
   en-us:
-    - clear all users
+#    - clear all users
     - what are user settings
     - what is clear
-    - clear the path to something
-    - i need to clear my alerts
+#    - clear the path to something
+    - i want to clear my alerts
