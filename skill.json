@@ -14,6 +14,7 @@
     "systemDeps": false,
     "requirements": {
         "python": [
+            "neon-phal-plugin-reset @ git+https://github.com/neongeckocom/neon-phal-plugin-reset@FEAT_HandleClearData",
             "neon-utils~=1.0",
             "ovos_utils~=0.0.28"
         ],
