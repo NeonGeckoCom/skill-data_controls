@@ -38,7 +38,8 @@ from mock import Mock
 from mock.mock import call
 from mycroft_bus_client import Message
 from ovos_utils.messagebus import FakeBus
-from neon_utils.configuration_utils import get_neon_user_config
+from neon_utils.configuration_utils import get_neon_user_config, \
+    get_user_config_from_mycroft_conf
 
 from mycroft.skills.skill_loader import SkillLoader
 
@@ -162,16 +163,19 @@ class TestSkill(unittest.TestCase):
         self.skill._clear_user_data = Mock()
 
         def _check_clear_user_data(dtype, message):
-            self.skill._clear_user_data.assert_called_with(dtype, message)
+            self.skill._clear_user_data.assert_called_with(dtype, message,
+                                                           "local")
             bus_event.wait(3)
             self.assertEqual(clear_data_message.context, message.context)
             self.assertEqual(clear_data_message.data["data_to_remove"],
                              [dtype.name])
             bus_event.clear()
 
+        # Test invalid request
         self.skill.handle_data_erase(invalid_message)
         self.skill._clear_user_data.assert_not_called()
 
+        # Test brands/transcript service
         self.skill.handle_data_erase(selected_message)
         _check_get_response("word_liked_brands", True)
         _check_clear_user_data(
@@ -189,24 +193,30 @@ class TestSkill(unittest.TestCase):
         self.skill.handle_data_erase(brands_message)
         _check_get_response("word_all_brands", True)
         self.skill._clear_user_data.assert_has_calls([
-            call(self.skill.UserData.CONF_LIKES, brands_message),
-            call(self.skill.UserData.CONF_DISLIKES, brands_message)
+            call(self.skill.UserData.CONF_LIKES, brands_message, "local"),
+            call(self.skill.UserData.CONF_DISLIKES, brands_message, "local")
         ])
         bus_event.wait(5)
         self.assertEqual(clear_data_message.context, brands_message.context)
         self.assertEqual(clear_data_message.data["data_to_remove"],
                          ["CONF_LIKES", "CONF_DISLIKES"])
         bus_event.clear()
+
+        # Test all data
         self.skill.handle_data_erase(all_data_message)
         _check_get_response("word_all_data", True)
         _check_clear_user_data(
             self.skill.UserData.ALL_DATA, all_data_message
         )
+
+        # Test media
         self.skill.handle_data_erase(media_message)
         _check_get_response("word_media", True)
         _check_clear_user_data(
             self.skill.UserData.ALL_MEDIA, media_message
         )
+
+        # Test profile data
         self.skill.handle_data_erase(units_message)
         _check_get_response("word_units", True)
         _check_clear_user_data(
@@ -217,15 +227,17 @@ class TestSkill(unittest.TestCase):
         _check_clear_user_data(
             self.skill.UserData.ALL_LANGUAGE, language_message
         )
-        self.skill.handle_data_erase(cache_message)
-        _check_get_response("word_caches", True)
-        _check_clear_user_data(
-            self.skill.UserData.CACHES, cache_message
-        )
         self.skill.handle_data_erase(profile_message)
         _check_get_response("word_profile_data", True)
         _check_clear_user_data(
             self.skill.UserData.PROFILE, profile_message
+        )
+
+        # Test Cache
+        self.skill.handle_data_erase(cache_message)
+        _check_get_response("word_caches", True)
+        _check_clear_user_data(
+            self.skill.UserData.CACHES, cache_message
         )
 
         self.skill.get_response = real_get_response
@@ -242,27 +254,31 @@ class TestSkill(unittest.TestCase):
         test_message = Message("test", {"key": "val"},
                                {"username": username,
                                 "user_profiles": [test_config]})
-        default_user_config = get_neon_user_config(self.skill.file_system.path)
+        new_user_config = get_user_config_from_mycroft_conf()
+        new_user_config['user']['username'] = username
 
         real_update_profile = self.skill.update_profile
         self.skill.update_profile = Mock()
 
+        # Clear full profile
         self.skill._clear_user_data(self.skill.UserData.ALL_DATA,
-                                    test_message)
+                                    test_message, username)
         self.skill.speak_dialog.assert_called_with("confirm_clear_all",
                                                    private=True)
         self.skill.update_profile.assert_called_with(
-            default_user_config.content, test_message)
+            new_user_config, test_message)
+        self.assertIsNotNone(new_user_config['user']['username'])
 
+        # Clear brands config
         self.skill._clear_user_data(self.skill.UserData.CONF_LIKES,
-                                    test_message)
+                                    test_message, username)
         self.skill.speak_dialog.assert_called_with(
             "confirm_clear_data",
             {"kind": self.skill.translate("word_liked_brands")},
             private=True
         )
         self.skill._clear_user_data(self.skill.UserData.CONF_DISLIKES,
-                                    test_message)
+                                    test_message, username)
         self.skill.speak_dialog.assert_called_with(
             "confirm_clear_data",
             {"kind": self.skill.translate("word_disliked_brands")},
@@ -272,55 +288,62 @@ class TestSkill(unittest.TestCase):
             {"brands": {"ignored_brands": {}}}, test_message
         )
         self.skill._clear_user_data(self.skill.UserData.ALL_TR,
-                                    test_message)
+                                    test_message, username)
         self.skill.speak_dialog.assert_called_with(
             "confirm_clear_data",
             {"kind": self.skill.translate("word_transcriptions")},
             private=True
         )
+        self.assertIsNotNone(new_user_config['user']['username'])
+
+        # Update profile sections
         self.skill._clear_user_data(self.skill.UserData.PROFILE,
-                                    test_message)
+                                    test_message, username)
         self.skill.speak_dialog.assert_called_with(
             "confirm_clear_data",
             {"kind": self.skill.translate("word_profile_data")},
             private=True
         )
         self.skill.update_profile.assert_called_with(
-            {"user": default_user_config["user"]}, test_message
-        )
-        self.skill._clear_user_data(self.skill.UserData.CACHES,
-                                    test_message)
-        self.skill.speak_dialog.assert_called_with(
-            "confirm_clear_data",
-            {"kind": self.skill.translate("word_caches")},
-            private=True
+            {"user": new_user_config["user"]}, test_message
         )
         self.skill._clear_user_data(self.skill.UserData.ALL_UNITS,
-                                    test_message)
+                                    test_message, username)
         self.skill.speak_dialog.assert_called_with(
             "confirm_clear_data",
             {"kind": self.skill.translate("word_units")},
             private=True
         )
         self.skill.update_profile.assert_called_with(
-            {"units": default_user_config["units"]}, test_message
-        )
-        self.skill._clear_user_data(self.skill.UserData.ALL_MEDIA,
-                                    test_message)
-        self.skill.speak_dialog.assert_called_with(
-            "confirm_clear_data",
-            {"kind": self.skill.translate("word_media")},
-            private=True
+            {"units": new_user_config["units"]}, test_message
         )
         self.skill._clear_user_data(self.skill.UserData.ALL_LANGUAGE,
-                                    test_message)
+                                    test_message, username)
         self.skill.speak_dialog.assert_called_with(
             "confirm_clear_data",
             {"kind": self.skill.translate("word_language")},
             private=True
         )
         self.skill.update_profile.assert_called_with(
-            {"speech": default_user_config["speech"]}, test_message
+            {"speech": new_user_config["speech"]}, test_message
+        )
+
+        # Clear caches
+        self.skill._clear_user_data(self.skill.UserData.CACHES,
+                                    test_message, username)
+        self.skill.speak_dialog.assert_called_with(
+            "confirm_clear_data",
+            {"kind": self.skill.translate("word_caches")},
+            private=True
+        )
+
+        # Clear media
+        self.skill._clear_user_data(self.skill.UserData.ALL_MEDIA,
+                                    test_message, username)
+        self.skill.speak_dialog.assert_called_with(
+            "confirm_clear_data",
+            {"kind": self.skill.translate("word_media")},
+            private=True
         )
 
         self.skill.update_profile = real_update_profile
