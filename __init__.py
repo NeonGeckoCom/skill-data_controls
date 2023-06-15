@@ -28,7 +28,7 @@
 
 from enum import IntEnum
 from random import randint
-from mycroft_bus_client import Message
+from ovos_bus_client import Message
 from neon_utils.skills.neon_skill import NeonSkill
 from neon_utils.validator_utils import numeric_confirmation_validator
 from neon_utils.configuration_utils import get_user_config_from_mycroft_conf
@@ -41,6 +41,7 @@ from mycroft.skills import intent_file_handler
 
 
 class DataControlsSkill(NeonSkill):
+    # TODO: Refactor into separate module
     class UserData(IntEnum):
         CACHES = 0
         PROFILE = 1
@@ -51,9 +52,6 @@ class DataControlsSkill(NeonSkill):
         ALL_MEDIA = 6
         ALL_UNITS = 7
         ALL_LANGUAGE = 8
-
-    def __init__(self):
-        super(DataControlsSkill, self).__init__(name="DataControlsSkill")
 
     @classproperty
     def runtime_requirements(self):
@@ -208,7 +206,3 @@ class DataControlsSkill(NeonSkill):
             updated_config = default_config["speech"]
             self.update_profile({"speech": updated_config}, message)
             return
-
-
-def create_skill():
-    return DataControlsSkill()
