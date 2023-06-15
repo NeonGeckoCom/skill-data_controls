@@ -36,7 +36,7 @@ from os import mkdir
 from os.path import dirname, join, exists
 from mock import Mock
 from mock.mock import call
-from mycroft_bus_client import Message
+from ovos_bus_client import Message
 from ovos_utils.messagebus import FakeBus
 from neon_utils.configuration_utils import get_neon_user_config, \
     get_user_config_from_mycroft_conf
