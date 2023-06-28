@@ -1,17 +1,12 @@
 # Changelog
 
-## [0.3.1a1](https://github.com/NeonGeckoCom/skill-data_controls/tree/0.3.1a1) (2023-04-20)
+## [1.0.1a1](https://github.com/NeonGeckoCom/skill-data_controls/tree/1.0.1a1) (2023-06-15)
 
-[Full Changelog](https://github.com/NeonGeckoCom/skill-data_controls/compare/0.3.0...0.3.1a1)
-
-**Implemented enhancements:**
-
-- \[FEAT\] Tests for Clear Data [\#22](https://github.com/NeonGeckoCom/skill-data_controls/issues/22)
+[Full Changelog](https://github.com/NeonGeckoCom/skill-data_controls/compare/1.0.0...1.0.1a1)
 
 **Merged pull requests:**
 
-- Update GH Automation [\#26](https://github.com/NeonGeckoCom/skill-data_controls/pull/26) ([NeonDaniel](https://github.com/NeonDaniel))
-- Fix "Clear Profile" intent handling [\#24](https://github.com/NeonGeckoCom/skill-data_controls/pull/24) ([NeonDaniel](https://github.com/NeonDaniel))
+- Update to resolve deprecation warnings [\#28](https://github.com/NeonGeckoCom/skill-data_controls/pull/28) ([NeonDaniel](https://github.com/NeonDaniel))
 
 
 
