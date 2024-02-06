@@ -37,7 +37,7 @@ from ovos_utils import classproperty
 from ovos_utils.log import LOG
 from ovos_utils.process_utils import RuntimeRequirements
 
-from mycroft.skills import intent_file_handler
+from ovos_workshop.skills.decorators import intent_handler
 
 
 class DataControlsSkill(NeonSkill):
@@ -65,7 +65,7 @@ class DataControlsSkill(NeonSkill):
                                    no_network_fallback=True,
                                    no_gui_fallback=True)
 
-    @intent_file_handler("clear_data.intent")
+    @intent_handler("clear_data.intent")
     def handle_data_erase(self, message: Message):
         """
         Handles a request to clear user data.
