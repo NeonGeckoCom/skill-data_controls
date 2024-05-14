@@ -37,7 +37,7 @@ from ovos_utils import classproperty
 from ovos_utils.log import LOG
 from ovos_utils.process_utils import RuntimeRequirements
 
-from ovos_workshop.skills.decorators import intent_handler
+from ovos_workshop.decorators import intent_handler
 
 
 class DataControlsSkill(NeonSkill):
