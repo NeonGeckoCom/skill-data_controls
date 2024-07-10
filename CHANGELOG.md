@@ -1,28 +1,12 @@
 # Changelog
 
-## [2.0.1a3](https://github.com/NeonGeckoCom/skill-data_controls/tree/2.0.1a3) (2024-04-02)
+## [2.0.2a1](https://github.com/NeonGeckoCom/skill-data_controls/tree/2.0.2a1) (2024-05-14)
 
-[Full Changelog](https://github.com/NeonGeckoCom/skill-data_controls/compare/2.0.1a2...2.0.1a3)
-
-**Merged pull requests:**
-
-- Update minerva test dependency to stable version [\#32](https://github.com/NeonGeckoCom/skill-data_controls/pull/32) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [2.0.1a2](https://github.com/NeonGeckoCom/skill-data_controls/tree/2.0.1a2) (2024-02-06)
-
-[Full Changelog](https://github.com/NeonGeckoCom/skill-data_controls/compare/2.0.1a1...2.0.1a2)
+[Full Changelog](https://github.com/NeonGeckoCom/skill-data_controls/compare/2.0.1...2.0.2a1)
 
 **Merged pull requests:**
 
-- Support ovos-utils 0.1 [\#30](https://github.com/NeonGeckoCom/skill-data_controls/pull/30) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [2.0.1a1](https://github.com/NeonGeckoCom/skill-data_controls/tree/2.0.1a1) (2024-02-06)
-
-[Full Changelog](https://github.com/NeonGeckoCom/skill-data_controls/compare/2.0.0...2.0.1a1)
-
-**Merged pull requests:**
-
-- Update skill tests to use neon-minerva [\#31](https://github.com/NeonGeckoCom/skill-data_controls/pull/31) ([NeonDaniel](https://github.com/NeonDaniel))
+- Resolve deprecation warning from ovos-workshop [\#34](https://github.com/NeonGeckoCom/skill-data_controls/pull/34) ([NeonDaniel](https://github.com/NeonDaniel))
 
 
 
