@@ -28,7 +28,7 @@
 
 from enum import IntEnum
 from random import randint
-from ovos_bus_client import Message
+from ovos_bus_client.message import Message
 from neon_utils.skills.neon_skill import NeonSkill
 from neon_utils.validator_utils import numeric_confirmation_validator
 from neon_utils.configuration_utils import get_user_config_from_mycroft_conf
