@@ -1,6 +1,6 @@
 # NEON AI (TM) SOFTWARE, Software Development Kit & Application Framework
 # All trademark and other rights reserved by their respective owners
-# Copyright 2008-2022 Neongecko.com Inc.
+# Copyright 2008-2025 Neongecko.com Inc.
 # Contributors: Daniel McKnight, Guy Daniels, Elon Gasper, Richard Leeds,
 # Regina Bloomstine, Casimiro Ferreira, Andrii Pernatii, Kirill Hrymailo
 # BSD-3 License
@@ -28,7 +28,7 @@
 
 from enum import IntEnum
 from random import randint
-from ovos_bus_client import Message
+from ovos_bus_client.message import Message
 from neon_utils.skills.neon_skill import NeonSkill
 from neon_utils.validator_utils import numeric_confirmation_validator
 from neon_utils.configuration_utils import get_user_config_from_mycroft_conf
