@@ -1,12 +1,20 @@
 # Changelog
 
-## [2.0.2a1](https://github.com/NeonGeckoCom/skill-data_controls/tree/2.0.2a1) (2024-05-14)
+## [2.0.3a2](https://github.com/NeonGeckoCom/skill-data_controls/tree/2.0.3a2) (2025-03-11)
 
-[Full Changelog](https://github.com/NeonGeckoCom/skill-data_controls/compare/2.0.1...2.0.2a1)
+[Full Changelog](https://github.com/NeonGeckoCom/skill-data_controls/compare/2.0.3a1...2.0.3a2)
 
 **Merged pull requests:**
 
-- Resolve deprecation warning from ovos-workshop [\#34](https://github.com/NeonGeckoCom/skill-data_controls/pull/34) ([NeonDaniel](https://github.com/NeonDaniel))
+- Update automation, gitignore, and license notices [\#37](https://github.com/NeonGeckoCom/skill-data_controls/pull/37) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [2.0.3a1](https://github.com/NeonGeckoCom/skill-data_controls/tree/2.0.3a1) (2024-09-17)
+
+[Full Changelog](https://github.com/NeonGeckoCom/skill-data_controls/compare/2.0.2...2.0.3a1)
+
+**Merged pull requests:**
+
+- Update OVOS depdendencies for 0.x compat [\#36](https://github.com/NeonGeckoCom/skill-data_controls/pull/36) ([NeonDaniel](https://github.com/NeonDaniel))
 
 
 
