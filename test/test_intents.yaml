@@ -45,11 +45,40 @@ en-us:
       - dataset: user settings
   - clear my profile:
       - dataset: profile
+      
+uk-ua:
+  clear_data.intent:
+  - очистити мої дані:
+      - dataset: дані
+  - стерти всі мої транскрипти:
+      - dataset: транскрипти
+  - я хочу видалити весь профіль:
+      - dataset: весь профіль
+  - я хочу щоб ти очистив всі мої медіа:
+      - dataset: медіа
+  - видалити всі мої фото:
+      - dataset: фото
+  - прибрати мої зображення:
+      - dataset: зображення
+  - я хочу скинути мої улюблені бренди:
+      - dataset: улюблені бренди
+  - стерти всі картинки:
+      - dataset: картинки
+  - видалити мій профіль:
+      - dataset: профіль
+  - очистити мої налаштування користувача:
+      - dataset: налаштування користувача
+  - очистити мій обліковий запис:
+      - dataset: обліковий запис
 
 unmatched intents:
   en-us:
     - what are user settings
     - what is clear
+  uk-ua:
+    - що таке налаштування користувача
+    - що означає очистити
+    - як працює очищення даних
 # TODO: Below should not match but do
 #    - clear my alerts
 #    - clear the path to something
