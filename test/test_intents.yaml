@@ -71,6 +71,31 @@ uk-ua:
   - очистити мій обліковий запис:
       - dataset: обліковий запис
 
+fr-fr:
+  clear_data.intent:
+  - efface mes données:
+      - dataset: données
+  - supprime toutes mes transcriptions:
+      - dataset: transcriptions
+  - je veux supprimer mon profil:
+      - dataset: profil
+  - je veux que tu effaces toutes mes médias:
+      - dataset: médias
+  - supprime toutes mes photos:
+      - dataset: photos
+  - enlève mes images:
+      - dataset: images
+  - je veux réinitialiser mes marques aimées:
+      - dataset: marques aimées
+  - efface toutes les photos:
+      - dataset: photos
+  - supprime mon profil:
+      - dataset: profil
+  - efface mes paramètres:
+      - dataset: paramètres
+  - efface mon compte:
+      - dataset: compte
+
 unmatched intents:
   en-us:
     - what are user settings
@@ -79,6 +104,10 @@ unmatched intents:
     - що таке налаштування користувача
     - що означає очистити
     - як працює очищення даних
+  fr-fr:
+    - qu'est-ce que les paramètres utilisateur
+    - que signifie effacer
+    - comment fonctionne le nettoyage des données
 # TODO: Below should not match but do
 #    - clear my alerts
 #    - clear the path to something
