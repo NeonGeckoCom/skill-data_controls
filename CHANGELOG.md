@@ -1,20 +1,20 @@
 # Changelog
 
-## [2.0.3a2](https://github.com/NeonGeckoCom/skill-data_controls/tree/2.0.3a2) (2025-03-11)
+## [2.0.4a2](https://github.com/NeonGeckoCom/skill-data_controls/tree/2.0.4a2) (2026-07-02)
 
-[Full Changelog](https://github.com/NeonGeckoCom/skill-data_controls/compare/2.0.3a1...2.0.3a2)
-
-**Merged pull requests:**
-
-- Update automation, gitignore, and license notices [\#37](https://github.com/NeonGeckoCom/skill-data_controls/pull/37) ([NeonDaniel](https://github.com/NeonDaniel))
-
-## [2.0.3a1](https://github.com/NeonGeckoCom/skill-data_controls/tree/2.0.3a1) (2024-09-17)
-
-[Full Changelog](https://github.com/NeonGeckoCom/skill-data_controls/compare/2.0.2...2.0.3a1)
+[Full Changelog](https://github.com/NeonGeckoCom/skill-data_controls/compare/2.0.4a1...2.0.4a2)
 
 **Merged pull requests:**
 
-- Update OVOS depdendencies for 0.x compat [\#36](https://github.com/NeonGeckoCom/skill-data_controls/pull/36) ([NeonDaniel](https://github.com/NeonDaniel))
+- Re-enable default intent tests in GHA [\#42](https://github.com/NeonGeckoCom/skill-data_controls/pull/42) ([NeonDaniel](https://github.com/NeonDaniel))
+
+## [2.0.4a1](https://github.com/NeonGeckoCom/skill-data_controls/tree/2.0.4a1) (2025-08-18)
+
+[Full Changelog](https://github.com/NeonGeckoCom/skill-data_controls/compare/2.0.3...2.0.4a1)
+
+**Merged pull requests:**
+
+- Ukrainian translation [\#39](https://github.com/NeonGeckoCom/skill-data_controls/pull/39) ([NeonDmitry](https://github.com/NeonDmitry))
 
 
 
